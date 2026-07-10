@@ -3,17 +3,11 @@ title: 코딩 없이 코딩
 description: 광명시 청년 대상 바이브코딩 커뮤니티 가이드
 template: splash # Remove or comment out this line to display the site sidebar on this page.
 hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
+  tagline: 광명시 청년 6명이 6주 동안 각자 웹사이트 하나를 만들어 배포하는 커뮤니티
   actions:
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
-      variant: minimal
+    - text: 도구 6종 보기
+      link: /core/01-tools/
 ---
-
-import { Card, CardGrid } from '@astrojs/starlight/components';
 
 ## 6회차 진행 곡선
 
@@ -21,13 +15,13 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 ---
 config:
   xyChart:
-    width: 700
+    width: 900
     height: 400
 ---
 xychart-beta
     title "6주 동안 감정 강도는 이렇게 움직입니다"
     x-axis ["1회차 · 아이디어", "2회차 · 설계", "3회차 · 뼈대", "4회차 · 기능", "5회차 · 다듬기", "6회차 · 배포"]
-    y-axis "감정 강도" 0 --> 10
+    y-axis 0 --> 10
     line [3, 4, 6, 5, 7, 10]
 ```
 
@@ -43,24 +37,3 @@ timeline
     5회차 : 완성
     6회차 : 라이브 URL
 ```
-
-## Next steps
-
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
-</CardGrid>
