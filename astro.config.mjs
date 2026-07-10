@@ -5,6 +5,8 @@ import mermaid from 'astro-mermaid';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://in-hyeokjang.github.io',
+	base: '/coding-without-coding',
 	integrations: [
 		mermaid({
 			theme: 'forest',
