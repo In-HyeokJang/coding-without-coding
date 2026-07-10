@@ -7,9 +7,6 @@ hero:
   image:
     file: ../../assets/houston.webp
   actions:
-    - text: Example Guide
-      link: /guides/example/
-      icon: right-arrow
     - text: Read the Starlight docs
       link: https://starlight.astro.build
       icon: external
@@ -17,6 +14,22 @@ hero:
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## 6회차 진행 곡선
+
+```mermaid
+---
+config:
+  xyChart:
+    width: 700
+    height: 400
+---
+xychart-beta
+    title "6주 동안 감정 강도는 이렇게 움직입니다"
+    x-axis ["1회차 · 아이디어", "2회차 · 설계", "3회차 · 뼈대", "4회차 · 기능", "5회차 · 다듬기", "6회차 · 배포"]
+    y-axis "감정 강도" 0 --> 10
+    line [3, 4, 6, 5, 7, 10]
+```
 
 ## Next steps
 
