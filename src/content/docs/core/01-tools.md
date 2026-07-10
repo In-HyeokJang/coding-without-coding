@@ -15,28 +15,24 @@ title: 우리가 쓰는 도구 6종
 
 그 "어딘가"가 6개 있습니다.
 
-```
-[ 내 노트북 ]                          [ 인터넷 ]
+```mermaid
+flowchart TD
+    subgraph laptop["내 노트북"]
+        node["Node.js<br/>사이트를 돌리는 엔진"]
+        vscode["VSCode<br/>코드를 들여다보는 창"]
+        claude["Claude Code<br/>코드를 만들어주는 AI"]
+        local["localhost:3000<br/>나만 볼 수 있는 주소"]
+    end
+    subgraph internet["인터넷"]
+        github["GitHub<br/>코드 창고"]
+        vercel["Vercel<br/>세상에 공개"]
+        supabase["Supabase<br/>데이터 창고"]
+    end
 
-  Node.js          ← 사이트를 돌리는 엔진
-  VSCode           ← 코드를 들여다보는 창
-  Claude Code      ← 코드를 만들어주는 AI
-       │
-       ↓ 코드가 만들어짐
-       │
-  localhost:3000   ← 나만 볼 수 있는 주소 (3회차)
-       │
-       ↓ 코드를 올림
-       │
-                              GitHub    ← 코드 창고 (5회차)
-                                 │
-                                 ↓ 코드를 가져감
-                                 │
-                              Vercel    ← 세상에 공개 (6회차)
-                                 │
-                                 ↓ 데이터를 읽음
-                                 │
-                              Supabase  ← 데이터 창고 (4회차)
+    claude -->|"코드가 만들어짐 · 3회차"| local
+    local -->|"코드를 올림 · 5회차"| github
+    github -->|"코드를 가져감 · 6회차"| vercel
+    vercel -->|"데이터를 읽음 · 4회차"| supabase
 ```
 
 ---
