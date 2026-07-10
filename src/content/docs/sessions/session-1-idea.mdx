@@ -2,6 +2,8 @@
 title: 1회차 · 아이디어
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 > **오늘의 목표:** 세팅을 다 뚫고, AI에게 첫 명령을 던져서 빈 프로젝트 폴더 만들기
 > **오늘 손에 남는 것:** 내 컴퓨터 안에 프로젝트 폴더 하나
 
@@ -65,21 +67,26 @@ node -v
 | Claude Pro / Max | Claude Code |
 | ChatGPT Plus / Pro | Codex |
 
-**Claude Code 설치**
-```
-npm install -g @anthropic-ai/claude-code
-```
+<Tabs>
+	<TabItem label="Claude Code">
+		**설치**
+		```
+		npm install -g @anthropic-ai/claude-code
+		```
 
-실행:
-```
-claude
-```
+		실행:
+		```
+		claude
+		```
 
-처음 실행하면 로그인 화면이 뜹니다. **Claude Pro/Max 계정으로 로그인하면 추가 결제 없습니다.**
+		처음 실행하면 로그인 화면이 뜹니다. **Claude Pro/Max 계정으로 로그인하면 추가 결제 없습니다.**
+	</TabItem>
+	<TabItem label="Codex">
+		**설치:** 옥탑방에서 함께 진행합니다.
 
-**Codex 설치:** 옥탑방에서 함께 진행합니다.
-
-> 설치 명령어는 바뀔 수 있어요. 옥탑방에서 최신 방법으로 다 같이 합니다.
+		> 설치 명령어는 바뀔 수 있어요. 옥탑방에서 최신 방법으로 다 같이 합니다.
+	</TabItem>
+</Tabs>
 
 ---
 
