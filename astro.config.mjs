@@ -7,7 +7,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: '코딩 없이 코딩',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/In-HyeokJang/coding-without-coding' }],
 			sidebar: [
 				{ label: '시작하기', link: '/' },
 				{
