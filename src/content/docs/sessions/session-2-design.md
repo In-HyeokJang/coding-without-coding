@@ -1,5 +1,7 @@
 ---
 title: 2회차 · 설계
+draft: true
+openDate: '2026-07-29'
 ---
 
 <div class="today-stats">

@@ -1,5 +1,7 @@
 ---
 title: 5회차 · 다듬기
+draft: true
+openDate: '2026-08-11'
 ---
 
 <div class="today-stats">

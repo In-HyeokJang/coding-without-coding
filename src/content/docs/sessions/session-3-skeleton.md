@@ -1,5 +1,7 @@
 ---
 title: 3회차 · 뼈대
+draft: true
+openDate: '2026-08-04'
 ---
 
 <div class="today-stats">

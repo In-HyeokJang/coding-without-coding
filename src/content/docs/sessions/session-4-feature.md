@@ -1,5 +1,7 @@
 ---
 title: 4회차 · 기능
+draft: true
+openDate: '2026-08-05'
 ---
 
 <div class="today-stats">

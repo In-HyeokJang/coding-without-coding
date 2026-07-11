@@ -1,0 +1,53 @@
+name: Auto-open sessions by date
+
+# 매일 00:05(KST)에 sessions/*.md* 를 훑어서, frontmatter의 openDate가
+# 오늘(한국 시간) 이하이면서 아직 draft: true인 파일의 draft 줄을 지우고
+# 커밋·푸시한다. 푸시되면 deploy.yml이 이어서 사이트를 다시 배포한다.
+#
+# 시즌 2에도 그대로 쓴다 — 회차 파일에 draft: true / openDate: 'YYYY-MM-DD'
+# 를 넣어두기만 하면 그 날짜에 자동으로 열린다.
+
+on:
+  schedule:
+    - cron: '5 15 * * *' # 15:05 UTC = 00:05 KST(다음날)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  open-sessions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: 오늘 날짜(KST) 기준으로 draft 해제
+        id: open
+        run: |
+          TODAY=$(TZ=Asia/Seoul date +%Y-%m-%d)
+          echo "오늘(KST): $TODAY"
+          CHANGED=0
+
+          for f in src/content/docs/sessions/*.md src/content/docs/sessions/*.mdx; do
+            [ -f "$f" ] || continue
+
+            OPEN_DATE=$(grep -m1 -oE "^openDate: *['\"]?[0-9]{4}-[0-9]{2}-[0-9]{2}" "$f" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' || true)
+            IS_DRAFT=$(grep -m1 -oE '^draft: *true' "$f" || true)
+
+            if [ -n "$OPEN_DATE" ] && [ -n "$IS_DRAFT" ] && [ "$OPEN_DATE" \< "$TODAY" -o "$OPEN_DATE" = "$TODAY" ]; then
+              echo "여는 중: $f (openDate=$OPEN_DATE)"
+              sed -i '/^draft: *true$/d' "$f"
+              CHANGED=1
+            fi
+          done
+
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+
+      - name: 변경됐으면 커밋 & 푸시
+        if: steps.open.outputs.changed == '1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/content/docs/sessions/
+          git commit -m "회차 자동 공개 (날짜 도달)"
+          git push

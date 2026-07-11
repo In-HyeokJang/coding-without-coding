@@ -1,5 +1,7 @@
 ---
 title: 6회차 · 배포
+draft: true
+openDate: '2026-08-12'
 ---
 
 <div class="today-stats">

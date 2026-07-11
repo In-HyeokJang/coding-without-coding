@@ -42,14 +42,9 @@ export default defineConfig({
 				},
 				{
 					label: '회차',
-					items: [
-						{ label: '1회차 · 아이디어', slug: 'sessions/session-1-idea' },
-						{ label: '2회차 · 설계', slug: 'sessions/session-2-design' },
-						{ label: '3회차 · 뼈대', slug: 'sessions/session-3-skeleton' },
-						{ label: '4회차 · 기능', slug: 'sessions/session-4-feature' },
-						{ label: '5회차 · 다듬기', slug: 'sessions/session-5-polish' },
-						{ label: '6회차 · 배포', slug: 'sessions/session-6-deploy' },
-					],
+					// 파일 목록 대신 자동 생성 — draft: true인 회차는 자동으로 사이드바에서
+					// 빠진다. 매주 해당 회차 파일에서 draft: true만 지우면 열린다.
+					items: [{ autogenerate: { directory: 'sessions' } }],
 				},
 				{ label: '변경 기록', link: '/changelog/' },
 			],
