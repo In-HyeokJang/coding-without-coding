@@ -154,13 +154,24 @@
 
 /* ── 표 ─────────────────────────────────────────────────────── */
 /* overflow는 auto로 둔다 — hidden으로 하면 좁은 화면에서 Starlight 기본
-   가로 스크롤이 막혀서 칸 안 텍스트가 억지로 줄바꿈되며 표가 깨져 보인다. */
+   가로 스크롤이 막혀서 칸 안 텍스트가 억지로 줄바꿈되며 표가 깨져 보인다.
+   table-layout은 fixed로 둔다 — auto는 넓은 화면에서 남는 공간을 칸 하나에
+   몰아줘서(보통 마지막 칸) 그 칸만 텅 비어 보이는 문제가 생긴다. fixed는
+   4칸에 공간을 균등하게 나눠서 이런 쏠림이 없다. */
 
 .sl-markdown-content table:not(:where(.not-content *)) {
 	width: 100%;
+	table-layout: fixed;
 	border-radius: var(--cwc-radius-sm);
 	overflow: auto;
 	border: 1px solid var(--sl-color-hairline);
+}
+
+/* 헤더 칸에 같은 값을 줘서 칸 수와 상관없이 폭을 정확히 균등 분배한다.
+   (fixed 레이아웃이라도 명시적 width가 없으면 헤더 글자 길이에 따라
+   칸 폭이 들쭉날쭉해진다.) */
+.sl-markdown-content th:not(:where(.not-content *)) {
+	width: 1%;
 }
 
 .sl-markdown-content :is(th, td):not(:where(.not-content *)) {
