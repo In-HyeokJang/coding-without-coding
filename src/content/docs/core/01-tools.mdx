@@ -2,6 +2,8 @@
 title: 우리가 쓰는 도구 6종
 ---
 
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
 > **읽는 시점:** 신청 직후 · 1회차 전
 > **읽는 시간:** 10분
 > 지금 다 이해 안 돼도 괜찮습니다. 회차마다 하나씩 준비합니다.
@@ -34,6 +36,27 @@ flowchart TD
     github -->|"코드를 가져감 · 6회차"| vercel
     vercel -->|"데이터를 읽음 · 4회차"| supabase
 ```
+
+<CardGrid>
+	<Card title="Node.js" icon="node">
+		사이트를 돌리는 엔진
+	</Card>
+	<Card title="VSCode" icon="vscode">
+		코드를 보는 창
+	</Card>
+	<Card title="Claude Code / Codex" icon="rocket">
+		코드를 만드는 AI
+	</Card>
+	<Card title="GitHub" icon="github">
+		코드 창고
+	</Card>
+	<Card title="Supabase" icon="database">
+		데이터 창고
+	</Card>
+	<Card title="Vercel" icon="vercel">
+		공개 서버
+	</Card>
+</CardGrid>
 
 ---
 

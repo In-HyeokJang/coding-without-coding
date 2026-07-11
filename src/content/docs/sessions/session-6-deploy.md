@@ -2,8 +2,16 @@
 title: 6회차 · 배포
 ---
 
-> **오늘의 목표:** 내 사이트를 세상에 공개하기
-> **오늘 손에 남는 것:** 누구나 열 수 있는 URL + 카드 한 장
+<div class="today-stats">
+	<div class="stat">
+		<p class="stat-label">오늘의 목표</p>
+		<p class="stat-value">내 사이트를 세상에 공개하기</p>
+	</div>
+	<div class="stat">
+		<p class="stat-label">오늘 손에 남는 것</p>
+		<p class="stat-value">누구나 열 수 있는 URL + 카드 한 장</p>
+	</div>
+</div>
 
 ---
 

@@ -2,8 +2,16 @@
 title: 2회차 · 설계
 ---
 
-> **오늘의 목표:** 내 사이트에 어떤 페이지가 필요하고, 각 페이지에 뭐가 들어갈지 정하기
-> **오늘 손에 남는 것:** 페이지 목록 문서 한 장
+<div class="today-stats">
+	<div class="stat">
+		<p class="stat-label">오늘의 목표</p>
+		<p class="stat-value">내 사이트에 어떤 페이지가 필요하고, 각 페이지에 뭐가 들어갈지 정하기</p>
+	</div>
+	<div class="stat">
+		<p class="stat-label">오늘 손에 남는 것</p>
+		<p class="stat-value">페이지 목록 문서 한 장</p>
+	</div>
+</div>
 
 ---
 

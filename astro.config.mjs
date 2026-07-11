@@ -11,10 +11,25 @@ export default defineConfig({
 		mermaid({
 			theme: 'forest',
 			autoTheme: true,
+			mermaidConfig: {
+				themeVariables: {
+					primaryBorderColor: '#e8562e',
+					lineColor: '#e8562e',
+					clusterBorder: '#e8562e',
+					clusterBkg: 'rgba(232, 86, 46, 0.08)',
+				},
+			},
 		}),
 		starlight({
 			title: '코딩 없이 코딩',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/In-HyeokJang/coding-without-coding' }],
+			customCss: ['./src/styles/custom.css'],
+			head: [
+				{
+					tag: 'link',
+					attrs: { rel: 'preconnect', href: 'https://cdn.jsdelivr.net', crossorigin: true },
+				},
+			],
 			sidebar: [
 				{ label: '시작하기', link: '/' },
 				{

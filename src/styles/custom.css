@@ -1,0 +1,241 @@
+/* 코딩 없이 코딩 · 커스텀 테마
+   기본 Starlight 문서 룩을 벗고, 따뜻한 코랄 톤 + Pretendard로 트렌디하게. */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+
+:root {
+	--sl-font: 'Pretendard Variable', Pretendard, var(--sl-font-system);
+
+	/* 중립색 hue를 224(차가운 파랑)에서 25(따뜻한 톤)로 이동 — 다크 모드 기본값 */
+	--sl-color-white: hsl(30, 18%, 96%);
+	--sl-color-gray-1: hsl(28, 12%, 88%);
+	--sl-color-gray-2: hsl(26, 9%, 72%);
+	--sl-color-gray-3: hsl(25, 8%, 54%);
+	--sl-color-gray-4: hsl(24, 8%, 38%);
+	--sl-color-gray-5: hsl(22, 10%, 26%);
+	--sl-color-gray-6: hsl(20, 14%, 15%);
+	--sl-color-black: hsl(20, 16%, 8%);
+
+	/* 코랄 악센트 (다크) */
+	--sl-color-accent-low: hsl(14, 45%, 22%);
+	--sl-color-accent: hsl(14, 88%, 63%);
+	--sl-color-accent-high: hsl(14, 90%, 85%);
+
+	--cwc-radius-sm: 0.5rem;
+	--cwc-radius-md: 0.875rem;
+	--cwc-radius-lg: 1.25rem;
+	--cwc-shadow-card: 0 1px 2px hsla(20, 30%, 3%, 0.5), 0 10px 28px hsla(20, 30%, 3%, 0.32);
+	--cwc-gradient: linear-gradient(120deg, hsl(14, 88%, 63%), hsl(28, 90%, 62%));
+	/* 본문 기본 리듬(1rem)과 구분되는, 커스텀 박스 전용 "큰 간격" — 모든 커스텀 박스가 이 값 하나만 쓴다 */
+	--cwc-gap-lg: 2rem;
+}
+
+:root[data-theme='light'] {
+	--sl-color-white: hsl(20, 18%, 12%);
+	--sl-color-gray-1: hsl(20, 14%, 20%);
+	--sl-color-gray-2: hsl(22, 10%, 30%);
+	--sl-color-gray-3: hsl(24, 8%, 45%);
+	--sl-color-gray-4: hsl(25, 8%, 62%);
+	--sl-color-gray-5: hsl(26, 12%, 82%);
+	--sl-color-gray-6: hsl(28, 24%, 94%);
+	--sl-color-gray-7: hsl(32, 35%, 97%);
+	--sl-color-black: hsl(36, 40%, 99%);
+
+	/* 코랄 악센트 (라이트) */
+	--sl-color-accent-low: hsl(14, 85%, 93%);
+	--sl-color-accent: hsl(14, 82%, 50%);
+	--sl-color-accent-high: hsl(14, 78%, 34%);
+
+	--cwc-shadow-card: 0 1px 2px hsla(20, 30%, 40%, 0.05), 0 10px 28px hsla(20, 30%, 40%, 0.07);
+}
+
+/* ── 타이포그래피 ───────────────────────────────────────────── */
+
+.sl-markdown-content :is(h1, h2, h3, h4, h5, h6) {
+	letter-spacing: -0.01em;
+	font-weight: 700;
+}
+
+/* 리스트 항목만 overflow-wrap: anywhere(Starlight 기본)라서 문단·인용구와
+   줄바꿈 방식이 달라 보였다 — 본문 전체를 같은 줄바꿈 규칙으로 통일한다 */
+.sl-markdown-content :is(p, li, blockquote, dd, dt, th, td) {
+	overflow-wrap: break-word;
+	word-break: keep-all;
+}
+
+/* ── 히어로 (홈 화면) ───────────────────────────────────────── */
+
+.hero {
+	position: relative;
+	padding-block: 2.5rem 1.5rem;
+}
+
+.hero::before {
+	content: '';
+	position: absolute;
+	inset: -3rem -1rem auto -1rem;
+	height: 22rem;
+	background: radial-gradient(60% 60% at 50% 0%, hsla(14, 88%, 60%, 0.16), transparent 70%);
+	pointer-events: none;
+	z-index: -1;
+}
+
+.hero h1 {
+	background-image: var(--cwc-gradient);
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	line-height: 1.15;
+}
+
+.hero .tagline {
+	max-width: 34em;
+	color: var(--sl-color-gray-2);
+	font-size: clamp(var(--sl-text-base), 1vw + 0.9rem, var(--sl-text-xl));
+}
+
+.hero .sl-link-button.primary {
+	background: var(--cwc-gradient);
+	border: none;
+	color: hsl(20, 30%, 10%);
+	font-weight: 600;
+	box-shadow: 0 6px 20px hsla(14, 80%, 50%, 0.35);
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hero .sl-link-button.primary:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 10px 26px hsla(14, 80%, 50%, 0.45);
+}
+
+/* ── 차트 섹션 (홈의 mermaid 다이어그램 감싸기) ─────────────── */
+
+.chart-section {
+	margin-block: var(--cwc-gap-lg);
+	padding: clamp(1.25rem, 2vw + 1rem, 2rem);
+	border-radius: var(--cwc-radius-lg);
+	background: var(--sl-color-bg-nav);
+	border: 1px solid var(--sl-color-hairline);
+	box-shadow: var(--cwc-shadow-card);
+}
+
+.chart-section h2 {
+	margin-top: 0;
+}
+
+.chart-section > *:last-child {
+	margin-bottom: 0;
+}
+
+/* ── 카드 / 카드그리드 ──────────────────────────────────────── */
+
+.card {
+	/* Starlight 기본은 카드마다 보라/초록/파랑을 순환시키는데, 코랄 톤 하나로 통일한다 */
+	--sl-card-border: var(--sl-color-accent);
+	--sl-card-bg: var(--sl-color-accent-low);
+	border-radius: var(--cwc-radius-md);
+	box-shadow: var(--cwc-shadow-card);
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+	transform: translateY(-2px);
+}
+
+/* ── 코드 블록 ──────────────────────────────────────────────── */
+
+.sl-markdown-content pre:not(:where(.not-content *)) {
+	border-radius: var(--cwc-radius-md);
+}
+
+.sl-markdown-content code:not(:where(.not-content *)) {
+	border-radius: 0.35rem;
+}
+
+/* ── 표 ─────────────────────────────────────────────────────── */
+/* overflow는 auto로 둔다 — hidden으로 하면 좁은 화면에서 Starlight 기본
+   가로 스크롤이 막혀서 칸 안 텍스트가 억지로 줄바꿈되며 표가 깨져 보인다. */
+
+.sl-markdown-content table:not(:where(.not-content *)) {
+	width: 100%;
+	border-radius: var(--cwc-radius-sm);
+	overflow: auto;
+	border: 1px solid var(--sl-color-hairline);
+}
+
+.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+	border-right: 1px solid var(--sl-color-hairline);
+}
+
+.sl-markdown-content :is(th:last-child, td:last-child):not(:where(.not-content *)) {
+	border-right: none;
+}
+
+.sl-markdown-content thead:not(:where(.not-content *)) {
+	background: var(--sl-color-accent-low);
+}
+
+.sl-markdown-content tbody tr:not(:where(.not-content *)):nth-child(even) {
+	background: var(--sl-color-bg-nav);
+}
+
+.sl-markdown-content tbody tr:not(:where(.not-content *)):hover {
+	background: var(--sl-color-accent-low);
+}
+
+/* ── 오늘의 목표 / 오늘 손에 남는 것 (회차 페이지 상단 스탯 카드) ── */
+
+.today-stats {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 0.75rem;
+	margin-block: var(--cwc-gap-lg);
+}
+
+@media (min-width: 40rem) {
+	.today-stats {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.today-stats .stat {
+	padding: 1rem 1.25rem;
+	border-radius: var(--cwc-radius-md);
+	background: var(--sl-color-accent-low);
+	border: 1px solid var(--sl-color-hairline);
+}
+
+.today-stats .stat-label {
+	margin: 0 0 0.3rem;
+	font-size: var(--sl-text-xs);
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--sl-color-accent-high);
+}
+
+.today-stats .stat-value {
+	margin: 0;
+	font-weight: 600;
+	color: var(--sl-color-white);
+}
+
+/* ── 안내문 (aside) ─────────────────────────────────────────── */
+
+.starlight-aside {
+	border-radius: var(--cwc-radius-md);
+}
+
+/* ── 탭 ─────────────────────────────────────────────────────── */
+
+[role='tab'][aria-selected='true'] {
+	color: var(--sl-color-accent-high);
+}
+
+/* ── 사이드바 ───────────────────────────────────────────────── */
+/* 활성 링크 배경/글자색은 Starlight 기본값(accent ↔ text-invert 대비 쌍)을
+   그대로 쓴다. accent 색상 자체를 코랄로 바꿨기 때문에 따로 손댈 필요 없음. */
+
+[aria-current='page'] {
+	border-radius: var(--cwc-radius-sm);
+}

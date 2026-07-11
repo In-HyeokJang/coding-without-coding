@@ -2,8 +2,16 @@
 title: 5회차 · 다듬기
 ---
 
-> **오늘의 목표:** 내일 배포할 수 있는 완성 상태로 만들기
-> **오늘 손에 남는 것:** 완성된 사이트 + GitHub에 올라간 코드
+<div class="today-stats">
+	<div class="stat">
+		<p class="stat-label">오늘의 목표</p>
+		<p class="stat-value">내일 배포할 수 있는 완성 상태로 만들기</p>
+	</div>
+	<div class="stat">
+		<p class="stat-label">오늘 손에 남는 것</p>
+		<p class="stat-value">완성된 사이트 + GitHub에 올라간 코드</p>
+	</div>
+</div>
 
 ---
 
