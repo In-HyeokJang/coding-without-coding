@@ -1,0 +1,444 @@
+---
+interface Props {
+	mode?: 'seal' | 'open';
+	supabaseUrl?: string;
+	supabaseAnonKey?: string;
+}
+
+const { mode = 'seal', supabaseUrl = '', supabaseAnonKey = '' } = Astro.props;
+---
+
+<div class="time-capsule-box" data-mode={mode} data-url={supabaseUrl} data-key={supabaseAnonKey}>
+	{mode === 'seal' ? (
+		<div class="seal-container">
+			<div class="capsule-header">
+				<span class="capsule-icon">🔒</span>
+				<h3>6주 타임캡슐 봉인하기 (1회차)</h3>
+				<p>6주 뒤 내가 만들고 싶은 사이트와 나만의 다짐을 봉인해두세요. 6회차에 공개됩니다!</p>
+			</div>
+
+			<form class="capsule-form" id="seal-form">
+				<div class="form-row">
+					<div class="form-group">
+						<label for="seal-name">참가자 이름 <span class="req">*</span></label>
+						<input type="text" id="seal-name" placeholder="예: 타스" required />
+					</div>
+					<div class="form-group">
+						<label for="seal-password">4자리 암호 (개봉용) <span class="req">*</span></label>
+						<input type="password" id="seal-password" maxlength="4" pattern="[0-9]{4}" placeholder="숫자 4자리 (예: 1234)" required />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="seal-idea">6주 뒤 내가 만들고 싶은 웹사이트 아이디어 <span class="req">*</span></label>
+					<textarea id="seal-idea" rows="3" placeholder="예: 성수동 브런치 카페 리뷰를 모아두는 1인 기록 사이트" required></textarea>
+				</div>
+
+				<div class="form-group">
+					<label for="seal-promise">나에게 보내는 한 줄 다짐 <span class="req">*</span></label>
+					<input type="text" id="seal-promise" placeholder="예: 에러가 나도 포기하지 않고 6주 완주하자!" required />
+				</div>
+
+				<button type="submit" class="btn-capsule submit-btn">
+					<span>🔒 6주 타임캡슐 봉인하기</span>
+				</button>
+			</form>
+
+			<div class="capsule-result hidden" id="seal-success">
+				<div class="success-card">
+					<span class="big-icon">🎉</span>
+					<h4>타임캡슐이 안전하게 봉인되었습니다!</h4>
+					<p class="sealed-info"></p>
+					<p class="note">6회차 마지막 날, 이름과 4자리 암호로 개봉할 수 있습니다. 🔑</p>
+				</div>
+			</div>
+		</div>
+	) : (
+		<div class="open-container">
+			<div class="capsule-header">
+				<span class="capsule-icon">🎁</span>
+				<h3>6주 타임캡슐 개봉하기 (6회차)</h3>
+				<p>1회차 때 봉인해두었던 나의 첫 아이디어와 6주 전 다짐을 열어보세요!</p>
+			</div>
+
+			<form class="capsule-form" id="open-form">
+				<div class="form-row">
+					<div class="form-group">
+						<label for="open-name">참가자 이름 <span class="req">*</span></label>
+						<input type="text" id="open-name" placeholder="봉인했던 이름 입력" required />
+					</div>
+					<div class="form-group">
+						<label for="open-password">4자리 암호 <span class="req">*</span></label>
+						<input type="password" id="open-password" maxlength="4" pattern="[0-9]{4}" placeholder="설정했던 4자리 암호" required />
+					</div>
+				</div>
+
+				<button type="submit" class="btn-capsule open-btn">
+					<span>🔑 내 타임캡슐 개봉하기</span>
+				</button>
+			</form>
+
+			<div class="capsule-result hidden" id="open-result">
+				<div class="opened-card">
+					<div class="card-badge">✨ 1회차 봉인했던 약속</div>
+					<h4 class="opened-title"></h4>
+					<div class="opened-content">
+						<div class="content-block">
+							<span class="label">💡 내가 꿈꾼 웹사이트 아이디어</span>
+							<p class="val-idea"></p>
+						</div>
+						<div class="content-block">
+							<span class="label">🔥 나에게 보낸 한 줄 다짐</span>
+							<p class="val-promise"></p>
+						</div>
+						<div class="content-block date-block">
+							<span class="label">📅 봉인한 날짜:</span>
+							<span class="val-date"></span>
+						</div>
+					</div>
+					<div class="card-footer">
+						<p>🎉 6주간의 여정을 완주하신 것을 축하드립니다! 당신은 이제 진짜 바이브코더입니다.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	)}
+</div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const boxes = document.querySelectorAll('.time-capsule-box');
+
+		boxes.forEach((box) => {
+			const mode = box.getAttribute('data-mode');
+			const envUrl = box.getAttribute('data-url') || (import.meta.env.PUBLIC_SUPABASE_URL as string);
+			const envKey = box.getAttribute('data-key') || (import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string);
+
+			if (mode === 'seal') {
+				const form = box.querySelector('#seal-form') as HTMLFormElement;
+				const resultDiv = box.querySelector('#seal-success') as HTMLDivElement;
+				const infoP = box.querySelector('.sealed-info') as HTMLParagraphElement;
+
+				form?.addEventListener('submit', async (e) => {
+					e.preventDefault();
+					const name = (box.querySelector('#seal-name') as HTMLInputElement).value.trim();
+					const password = (box.querySelector('#seal-password') as HTMLInputElement).value.trim();
+					const idea = (box.querySelector('#seal-idea') as HTMLTextAreaElement).value.trim();
+					const promise = (box.querySelector('#seal-promise') as HTMLInputElement).value.trim();
+
+					const capsuleData = {
+						name,
+						password,
+						idea,
+						promise,
+						created_at: new Date().toISOString(),
+					};
+
+					// Supabase REST API 호출 시도 (설정이 없을 시 LocalStorage fallback)
+					let isSaved = false;
+					if (envUrl && envKey) {
+						try {
+							const res = await fetch(`${envUrl}/rest/v1/time_capsules`, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									apikey: envKey,
+									Authorization: `Bearer ${envKey}`,
+									Prefer: 'return=minimal',
+								},
+								body: JSON.stringify(capsuleData),
+							});
+							if (res.ok) isSaved = true;
+						} catch (err) {
+							console.warn('Supabase 연동 오류, 로컬 저장소에 백업합니다.', err);
+						}
+					}
+
+					// 백업 / 로컬 스토리지에도 저장
+					const localCapsules = JSON.parse(localStorage.getItem('cwc_time_capsules') || '[]');
+					localCapsules.push(capsuleData);
+					localStorage.setItem('cwc_time_capsules', JSON.stringify(localCapsules));
+
+					form.classList.add('hidden');
+					if (resultDiv && infoP) {
+						infoP.textContent = `[${name}] 님의 타임캡슐이 성공적으로 봉인되었습니다!`;
+						resultDiv.classList.remove('hidden');
+					}
+				});
+			} else if (mode === 'open') {
+				const form = box.querySelector('#open-form') as HTMLFormElement;
+				const resultDiv = box.querySelector('#open-result') as HTMLDivElement;
+				const openedTitle = box.querySelector('.opened-title') as HTMLHeadingElement;
+				const valIdea = box.querySelector('.val-idea') as HTMLParagraphElement;
+				const valPromise = box.querySelector('.val-promise') as HTMLParagraphElement;
+				const valDate = box.querySelector('.val-date') as HTMLSpanElement;
+
+				form?.addEventListener('submit', async (e) => {
+					e.preventDefault();
+					const name = (box.querySelector('#open-name') as HTMLInputElement).value.trim();
+					const password = (box.querySelector('#open-password') as HTMLInputElement).value.trim();
+
+					let foundData: any = null;
+
+					// Supabase에서 먼저 검색
+					if (envUrl && envKey) {
+						try {
+							const res = await fetch(
+								`${envUrl}/rest/v1/time_capsules?name=eq.${encodeURIComponent(name)}&password=eq.${encodeURIComponent(password)}&select=*`,
+								{
+									headers: {
+										apikey: envKey,
+										Authorization: `Bearer ${envKey}`,
+									},
+								}
+							);
+							if (res.ok) {
+								const rows = await res.json();
+								if (rows && rows.length > 0) {
+									foundData = rows[0];
+								}
+							}
+						} catch (err) {
+							console.warn('Supabase 조회 실패, 로컬 저장소를 조회합니다.');
+						}
+					}
+
+					// Supabase에서 못 찾았을 경우 LocalStorage 조회 fallback
+					if (!foundData) {
+						const localCapsules = JSON.parse(localStorage.getItem('cwc_time_capsules') || '[]');
+						foundData = localCapsules.find((c: any) => c.name === name && c.password === password);
+					}
+
+					if (foundData) {
+						form.classList.add('hidden');
+						if (openedTitle) openedTitle.textContent = `${foundData.name} 님의 타임캡슐 🎁`;
+						if (valIdea) valIdea.textContent = foundData.idea;
+						if (valPromise) valPromise.textContent = foundData.promise;
+						if (valDate) {
+							const dateObj = new Date(foundData.created_at || Date.now());
+							valDate.textContent = dateObj.toLocaleDateString('ko-KR', {
+								year: 'numeric',
+								month: 'long',
+								day: 'numeric',
+							});
+						}
+						resultDiv?.classList.remove('hidden');
+					} else {
+						alert('❌ 이름 또는 4자리 암호가 일치하지 않습니다. 다시 확인해주세요!');
+					}
+				});
+			}
+		});
+	});
+</script>
+
+<style>
+	.time-capsule-box {
+		margin-block: var(--cwc-gap-lg);
+		padding: clamp(1.25rem, 2vw + 1.25rem, 2rem);
+		border-radius: var(--cwc-radius-lg);
+		background: var(--sl-color-bg-nav);
+		border: 1px solid var(--sl-color-accent);
+		box-shadow: var(--cwc-shadow-card);
+	}
+
+	.capsule-header {
+		text-align: center;
+		margin-bottom: 1.5rem;
+	}
+
+	.capsule-icon {
+		font-size: 2.5rem;
+		display: block;
+		margin-bottom: 0.5rem;
+	}
+
+	.capsule-header h3 {
+		margin: 0 0 0.5rem;
+		font-size: var(--sl-text-xl);
+		color: var(--sl-color-white);
+	}
+
+	.capsule-header p {
+		margin: 0;
+		color: var(--sl-color-gray-2);
+		font-size: var(--sl-text-sm);
+	}
+
+	.capsule-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.form-row {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	@media (min-width: 35rem) {
+		.form-row {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	.form-group {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+
+	.form-group label {
+		font-size: var(--sl-text-xs);
+		font-weight: 700;
+		color: var(--sl-color-accent-high);
+	}
+
+	.form-group .req {
+		color: var(--sl-color-accent);
+	}
+
+	.form-group input,
+	.form-group textarea {
+		padding: 0.75rem 1rem;
+		border-radius: var(--cwc-radius-sm);
+		border: 1px solid var(--sl-color-gray-5);
+		background: var(--sl-color-black);
+		color: var(--sl-color-white);
+		font-family: inherit;
+		font-size: var(--sl-text-base);
+		transition: border-color 0.15s ease;
+	}
+
+	.form-group input:focus,
+	.form-group textarea:focus {
+		outline: none;
+		border-color: var(--sl-color-accent);
+	}
+
+	.btn-capsule {
+		margin-top: 0.5rem;
+		padding: 0.9rem 1.5rem;
+		border-radius: var(--cwc-radius-md);
+		border: none;
+		background: var(--cwc-gradient);
+		color: hsl(20, 30%, 10%);
+		font-weight: 700;
+		font-size: var(--sl-text-base);
+		cursor: pointer;
+		box-shadow: 0 4px 14px hsla(14, 80%, 50%, 0.35);
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+	}
+
+	.btn-capsule:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 8px 20px hsla(14, 80%, 50%, 0.45);
+	}
+
+	.hidden {
+		display: none !important;
+	}
+
+	/* 성공/결과 카드 */
+	.success-card,
+	.opened-card {
+		padding: 1.5rem;
+		border-radius: var(--cwc-radius-md);
+		background: var(--sl-color-accent-low);
+		border: 1px solid var(--sl-color-accent);
+		text-align: center;
+	}
+
+	.big-icon {
+		font-size: 3rem;
+		display: block;
+		margin-bottom: 0.5rem;
+	}
+
+	.success-card h4 {
+		margin: 0 0 0.5rem;
+		color: var(--sl-color-white);
+	}
+
+	.sealed-info {
+		font-weight: 700;
+		color: var(--sl-color-accent-high);
+		margin-bottom: 0.5rem;
+	}
+
+	.opened-card {
+		text-align: left;
+	}
+
+	.card-badge {
+		display: inline-block;
+		padding: 0.25rem 0.75rem;
+		border-radius: 2rem;
+		background: var(--sl-color-accent);
+		color: hsl(20, 30%, 10%);
+		font-size: var(--sl-text-xs);
+		font-weight: 700;
+		margin-bottom: 0.75rem;
+	}
+
+	.opened-title {
+		margin: 0 0 1rem;
+		font-size: var(--sl-text-xl);
+		color: var(--sl-color-white);
+	}
+
+	.opened-content {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		background: var(--sl-color-black);
+		padding: 1.25rem;
+		border-radius: var(--cwc-radius-sm);
+		border: 1px solid var(--sl-color-hairline);
+	}
+
+	.content-block .label {
+		display: block;
+		font-size: var(--sl-text-xs);
+		font-weight: 700;
+		color: var(--sl-color-accent-high);
+		margin-bottom: 0.25rem;
+	}
+
+	.content-block p {
+		margin: 0;
+		color: var(--sl-color-white);
+		font-size: var(--sl-text-base);
+		white-space: pre-wrap;
+	}
+
+	.date-block {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 0.5rem;
+		border-top: 1px dashed var(--sl-color-gray-5);
+		padding-top: 0.75rem;
+	}
+
+	.date-block .label {
+		margin-bottom: 0;
+	}
+
+	.date-block .val-date {
+		color: var(--sl-color-gray-2);
+		font-size: var(--sl-text-xs);
+	}
+
+	.card-footer {
+		margin-top: 1.25rem;
+		text-align: center;
+	}
+
+	.card-footer p {
+		margin: 0;
+		font-weight: 600;
+		color: var(--sl-color-accent-high);
+	}
+</style>
