@@ -1,6 +1,6 @@
 name: Auto-open sessions by date
 
-# 매일 00:05(KST)에 sessions/*.md* 를 훑어서, frontmatter의 openDate가
+# 매일 19:25(KST)에 sessions/*.md* 를 훑어서, frontmatter의 openDate가
 # 오늘(한국 시간) 이하이면서 아직 draft: true인 파일의 draft 줄을 지우고
 # 커밋·푸시한다. 푸시되면 deploy.yml이 이어서 사이트를 다시 배포한다.
 #
@@ -9,7 +9,7 @@ name: Auto-open sessions by date
 
 on:
   schedule:
-    - cron: '5 15 * * *' # 15:05 UTC = 00:05 KST(다음날)
+    - cron: '25 10 * * *' # 10:25 UTC = 19:25 KST (모임 5분 전)
   workflow_dispatch:
 
 permissions:
