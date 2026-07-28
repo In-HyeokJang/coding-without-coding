@@ -17,6 +17,11 @@ const { mode = 'seal', supabaseUrl = '', supabaseAnonKey = '' } = Astro.props;
 				<p>6주 뒤 내가 만들고 싶은 사이트와 나만의 다짐을 봉인해두세요. 6회차에 공개됩니다!</p>
 			</div>
 
+			<p class="capsule-warning">
+				⚠️ 여기 적는 <strong>4자리 암호는 이 사이트에서만 쓰는 임시 번호</strong>입니다.
+				은행·휴대폰·카드처럼 <strong>평소에 쓰는 비밀번호는 절대 쓰지 마세요.</strong>
+			</p>
+
 			<form class="capsule-form" id="seal-form">
 				<div class="form-row">
 					<div class="form-group">
@@ -25,7 +30,8 @@ const { mode = 'seal', supabaseUrl = '', supabaseAnonKey = '' } = Astro.props;
 					</div>
 					<div class="form-group">
 						<label for="seal-password">4자리 암호 (개봉용) <span class="req">*</span></label>
-						<input type="password" id="seal-password" maxlength="4" pattern="[0-9]{4}" placeholder="숫자 4자리 (예: 1234)" required />
+						<input type="password" id="seal-password" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="숫자 4자리 (예: 1234)" required />
+						<span class="field-hint">평소 쓰는 비밀번호 금지. 아무 숫자 4개.</span>
 					</div>
 				</div>
 
@@ -39,6 +45,8 @@ const { mode = 'seal', supabaseUrl = '', supabaseAnonKey = '' } = Astro.props;
 					<input type="text" id="seal-promise" placeholder="예: 에러가 나도 포기하지 않고 6주 완주하자!" required />
 				</div>
 
+				<p class="capsule-error hidden" id="seal-error" role="alert"></p>
+
 				<button type="submit" class="btn-capsule submit-btn">
 					<span>🔒 6주 타임캡슐 봉인하기</span>
 				</button>
@@ -50,6 +58,16 @@ const { mode = 'seal', supabaseUrl = '', supabaseAnonKey = '' } = Astro.props;
 					<h4>타임캡슐이 안전하게 봉인되었습니다!</h4>
 					<p class="sealed-info"></p>
 					<p class="note">6회차 마지막 날, 이름과 4자리 암호로 개봉할 수 있습니다. 🔑</p>
+					<p class="note">봉인한 내용은 <strong>수정할 수 없습니다.</strong> 6주 뒤에 만나요!</p>
+				</div>
+			</div>
+
+			<div class="capsule-result hidden" id="seal-locked">
+				<div class="locked-card">
+					<span class="big-icon">🔐</span>
+					<h4>이미 봉인을 마쳤습니다</h4>
+					<p class="locked-info"></p>
+					<p class="note">한 번 봉인한 캡슐은 열기 전까지 수정할 수 없습니다. 6회차에 만나요! 🔑</p>
 				</div>
 			</div>
 		</div>
@@ -115,54 +133,118 @@ const { mode = 'seal', supabaseUrl = '', supabaseAnonKey = '' } = Astro.props;
 			const envKey = box.getAttribute('data-key') || (import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string);
 
 			if (mode === 'seal') {
+				const SEALED_KEY = 'cwc_capsule_sealed';
 				const form = box.querySelector('#seal-form') as HTMLFormElement;
+				const warning = box.querySelector('.capsule-warning') as HTMLParagraphElement;
 				const resultDiv = box.querySelector('#seal-success') as HTMLDivElement;
+				const lockedDiv = box.querySelector('#seal-locked') as HTMLDivElement;
 				const infoP = box.querySelector('.sealed-info') as HTMLParagraphElement;
+				const lockedP = box.querySelector('.locked-info') as HTMLParagraphElement;
+				const errorP = box.querySelector('#seal-error') as HTMLParagraphElement;
+				const submitBtn = box.querySelector('.submit-btn') as HTMLButtonElement;
+
+				const showError = (msg: string) => {
+					if (!errorP) return;
+					errorP.textContent = `❌ ${msg}`;
+					errorP.classList.remove('hidden');
+				};
+				const clearError = () => errorP?.classList.add('hidden');
+
+				// 이 브라우저에서 이미 봉인했다면 폼을 아예 잠근다 (봉인 후 수정 불가)
+				const sealedName = localStorage.getItem(SEALED_KEY);
+				if (sealedName) {
+					form?.classList.add('hidden');
+					warning?.classList.add('hidden');
+					if (lockedP) lockedP.textContent = `[${sealedName}] 님의 타임캡슐은 이미 봉인되어 있습니다.`;
+					lockedDiv?.classList.remove('hidden');
+				}
 
 				form?.addEventListener('submit', async (e) => {
 					e.preventDefault();
+					clearError();
+
 					const name = (box.querySelector('#seal-name') as HTMLInputElement).value.trim();
 					const password = (box.querySelector('#seal-password') as HTMLInputElement).value.trim();
 					const idea = (box.querySelector('#seal-idea') as HTMLTextAreaElement).value.trim();
 					const promise = (box.querySelector('#seal-promise') as HTMLInputElement).value.trim();
 
-					const capsuleData = {
-						name,
-						password,
-						idea,
-						promise,
-						created_at: new Date().toISOString(),
-					};
-
-					// Supabase REST API 호출 시도 (설정이 없을 시 LocalStorage fallback)
-					let isSaved = false;
-					if (envUrl && envKey) {
-						try {
-							const res = await fetch(`${envUrl}/rest/v1/time_capsules`, {
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json',
-									apikey: envKey,
-									Authorization: `Bearer ${envKey}`,
-									Prefer: 'return=minimal',
-								},
-								body: JSON.stringify(capsuleData),
-							});
-							if (res.ok) isSaved = true;
-						} catch (err) {
-							console.warn('Supabase 연동 오류, 로컬 저장소에 백업합니다.', err);
-						}
+					if (!/^[0-9]{4}$/.test(password)) {
+						showError('암호는 숫자 4자리로 입력해주세요.');
+						return;
 					}
 
-					// 백업 / 로컬 스토리지에도 저장
-					const localCapsules = JSON.parse(localStorage.getItem('cwc_time_capsules') || '[]');
-					localCapsules.push(capsuleData);
-					localStorage.setItem('cwc_time_capsules', JSON.stringify(localCapsules));
+					// 저장할 곳이 없으면 성공한 척하지 않는다
+					if (!envUrl || !envKey) {
+						showError(
+							'서버 연결 설정이 없어 봉인할 수 없습니다. 진행자(타스)에게 알려주세요. 지금 봉인하면 기록이 남지 않습니다.'
+						);
+						return;
+					}
 
-					form.classList.add('hidden');
-					if (resultDiv && infoP) {
-						infoP.textContent = `[${name}] 님의 타임캡슐이 성공적으로 봉인되었습니다!`;
-						resultDiv.classList.remove('hidden');
+					submitBtn.disabled = true;
+					const btnLabel = submitBtn.querySelector('span') as HTMLSpanElement;
+					const originalLabel = btnLabel?.textContent ?? '';
+					if (btnLabel) btnLabel.textContent = '봉인하는 중...';
+
+					const restore = () => {
+						submitBtn.disabled = false;
+						if (btnLabel) btnLabel.textContent = originalLabel;
+					};
+
+					try {
+						// 같은 이름이 이미 있으면 덮어쓰지 않는다 (봉인 후 수정 불가)
+						const dupRes = await fetch(
+							`${envUrl}/rest/v1/time_capsules?name=eq.${encodeURIComponent(name)}&select=id`,
+							{ headers: { apikey: envKey, Authorization: `Bearer ${envKey}` } }
+						);
+						if (!dupRes.ok) throw new Error(`조회 실패 (${dupRes.status})`);
+						const dupRows = await dupRes.json();
+						if (Array.isArray(dupRows) && dupRows.length > 0) {
+							restore();
+							showError(
+								`[${name}] 이름으로 봉인된 캡슐이 이미 있습니다. 봉인한 내용은 수정할 수 없습니다. 본인이 방금 봉인한 게 아니라면 이름 뒤에 한 글자를 더 붙여주세요.`
+							);
+							return;
+						}
+
+						const capsuleData = {
+							name,
+							password,
+							idea,
+							promise,
+							created_at: new Date().toISOString(),
+						};
+
+						const res = await fetch(`${envUrl}/rest/v1/time_capsules`, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								apikey: envKey,
+								Authorization: `Bearer ${envKey}`,
+								Prefer: 'return=minimal',
+							},
+							body: JSON.stringify(capsuleData),
+						});
+						if (!res.ok) throw new Error(`저장 실패 (${res.status})`);
+
+						// 여기까지 왔을 때만 진짜 봉인 성공
+						localStorage.setItem(SEALED_KEY, name);
+						const localCapsules = JSON.parse(localStorage.getItem('cwc_time_capsules') || '[]');
+						localCapsules.push(capsuleData);
+						localStorage.setItem('cwc_time_capsules', JSON.stringify(localCapsules));
+
+						form.classList.add('hidden');
+						warning?.classList.add('hidden');
+						if (resultDiv && infoP) {
+							infoP.textContent = `[${name}] 님의 타임캡슐이 성공적으로 봉인되었습니다!`;
+							resultDiv.classList.remove('hidden');
+						}
+					} catch (err) {
+						console.warn('타임캡슐 봉인 실패', err);
+						restore();
+						showError(
+							`봉인에 실패했습니다 (${err instanceof Error ? err.message : '네트워크 오류'}). 인터넷 연결을 확인하고 다시 눌러주세요. 계속 안 되면 진행자에게 알려주세요.`
+						);
 					}
 				});
 			} else if (mode === 'open') {
@@ -338,6 +420,61 @@ const { mode = 'seal', supabaseUrl = '', supabaseAnonKey = '' } = Astro.props;
 
 	.hidden {
 		display: none !important;
+	}
+
+	/* 암호 재사용 경고 */
+	.capsule-warning {
+		margin: 0 0 1.25rem;
+		padding: 0.75rem 1rem;
+		border-radius: var(--cwc-radius-sm);
+		background: var(--sl-color-orange-low, var(--sl-color-accent-low));
+		border: 1px solid var(--sl-color-orange, var(--sl-color-accent));
+		color: var(--sl-color-white);
+		font-size: var(--sl-text-sm);
+		line-height: 1.6;
+	}
+
+	.field-hint {
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
+
+	/* 봉인 실패 안내 */
+	.capsule-error {
+		margin: 0;
+		padding: 0.75rem 1rem;
+		border-radius: var(--cwc-radius-sm);
+		background: var(--sl-color-red-low, hsla(0, 70%, 40%, 0.15));
+		border: 1px solid var(--sl-color-red, hsl(0, 70%, 55%));
+		color: var(--sl-color-white);
+		font-size: var(--sl-text-sm);
+		line-height: 1.6;
+	}
+
+	.btn-capsule:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+		transform: none;
+	}
+
+	/* 이미 봉인함 */
+	.locked-card {
+		padding: 1.5rem;
+		border-radius: var(--cwc-radius-md);
+		background: var(--sl-color-bg);
+		border: 1px dashed var(--sl-color-accent);
+		text-align: center;
+	}
+
+	.locked-card h4 {
+		margin: 0 0 0.5rem;
+		color: var(--sl-color-white);
+	}
+
+	.locked-info {
+		font-weight: 700;
+		color: var(--sl-color-accent-high);
+		margin-bottom: 0.5rem;
 	}
 
 	/* 성공/결과 카드 */
