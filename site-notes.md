@@ -108,7 +108,7 @@ sidebar: [
    openDate: '2026-07-29'
    ---
    ```
-2. `.github/workflows/auto-open-sessions.yml` 이 **매일 00:05(한국 시간)** 자동 실행
+2. `.github/workflows/auto-open-sessions.yml` 이 **매일 19:25(한국 시간, 모임 5분 전)** 자동 실행
 3. 모든 페이지를 훑어서, 오늘 날짜가 `openDate` 이상이고 아직 `draft: true`인 파일을 찾으면 그 줄을 지우고 **자동으로 커밋 + 푸시**
 4. 푸시되면 원래 있던 배포 워크플로우(`deploy.yml`)가 이어서 돌면서 사이트가 재배포됨
 
@@ -122,7 +122,7 @@ name: Auto-open sessions by date
 
 on:
   schedule:
-    - cron: '5 15 * * *' # 15:05 UTC = 00:05 KST(다음날)
+    - cron: '25 10 * * *' # 10:25 UTC = 19:25 KST (모임 5분 전)
   workflow_dispatch: # Actions 탭에서 수동 실행 버튼도 생김
 
 permissions:
@@ -184,6 +184,43 @@ GitHub Actions의 `schedule`(cron) 트리거는 **저장소의 기본 브랜치�
 
 시즌 2 준비할 때: 새 회차 파일에 `draft: true` + `openDate: 'YYYY-MM-DD'`만 넣어두면 이 워크플로우가 그대로 재사용됨. 코드 수정 필요 없음.
 
+## 7. 디지털 타임캡슐 (Supabase · 서버 없이 데이터 저장)
+
+1회차에 봉인하고 6회차에 여는 폼. `src/components/TimeCapsule.astro` 하나로 `mode="seal"` / `mode="open"` 둘 다 처리한다.
+
+정적 사이트라 서버가 없어서, **브라우저에서 Supabase REST API를 직접 호출**한다. 그래서 anon 키가 빌드 결과물에 그대로 박힌다 — 이게 아래 함정의 원인.
+
+### ⚠️ 함정 1: 환경 변수는 "빌드할 때" 주입돼야 한다
+
+`import.meta.env.PUBLIC_*` 는 빌드 시점에 값이 코드 안으로 치환된다. 로컬은 `.env` 를 자동으로 읽어서 잘 되는데, **GitHub Actions는 `.env` 가 없으니까 빈 값으로 빌드된다.** 로컬에서 멀쩡히 되니까 문제를 눈치채기 어렵다.
+
+```yaml
+# deploy.yml — 이 env 블록이 없으면 배포본에서만 조용히 안 된다
+- uses: withastro/action@v6
+  env:
+    PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL || secrets.PUBLIC_SUPABASE_URL }}
+    PUBLIC_SUPABASE_ANON_KEY: ${{ vars.PUBLIC_SUPABASE_ANON_KEY || secrets.PUBLIC_SUPABASE_ANON_KEY }}
+```
+
+확인법: 빌드하고 `dist/` 안에서 Supabase 주소를 찾아본다. 안 나오면 주입이 안 된 것.
+
+```bash
+npm run build && grep -rl "내프로젝트.supabase.co" dist/
+```
+
+### ⚠️ 함정 2: 저장 실패를 성공으로 보여주면 안 된다
+
+처음엔 저장에 실패해도 localStorage에 백업하고 화면엔 "봉인 성공"을 띄웠다. **6주 뒤에 열었을 때 아무것도 없는 게 그때 가서야 드러난다.** 지금은 서버 저장이 확인된 경우에만 성공 화면을 띄운다.
+
+교훈: 사용자에게 성공을 알리는 기준은 **"서버가 200을 줬는가"** 이지 "코드가 에러 없이 끝났는가"가 아니다.
+
+### ⚠️ 함정 3: anon 키는 공개된 값이다 (아직 안 고침)
+
+빌드 결과물에 박혀 있으니 누구나 볼 수 있다. 지금 `time_capsules` 테이블은 anon에게 조회·저장·삭제가 다 열려 있어서, **마음만 먹으면 남의 캡슐을 다 읽거나 지울 수 있다.** 암호도 평문으로 저장된다.
+
+6명이 3주 쓰는 내부용이라 그냥 두고 있지만, 시즌 2 전에는 RLS 정책을 조여야 한다. 그때까지는 **참가자에게 "평소 쓰는 비밀번호 쓰지 마세요"를 반드시 안내**한다.
+
 ---
 
 *작성: 2026-07-11 · 디자인 리모델링 + 날짜 자동 공개 작업하면서 정리*
+*수정: 2026-07-28 · 자동 공개 시간 19:25로 변경, 타임캡슐 항목 추가*
