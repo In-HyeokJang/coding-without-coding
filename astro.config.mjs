@@ -35,6 +35,7 @@ export default defineConfig({
 				{
 					label: '준비',
 					items: [
+						{ label: '작업 공간 만들기', slug: 'core/00-workspace' },
 						{ label: '도구 6종', slug: 'core/01-tools' },
 						{ label: '프롬프트 가이드', slug: 'core/02-prompting' },
 						{ label: '토큰 절약 설정', slug: 'core/03-token-setup' },
