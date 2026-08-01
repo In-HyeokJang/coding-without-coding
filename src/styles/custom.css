@@ -237,6 +237,57 @@
 	border-radius: var(--cwc-radius-md);
 }
 
+/* ── 함께 보면 좋은 문서 (본문 안 문서 안내 박스) ─────────────── */
+/* 회색 인용구(>)로 두면 본문에 묻혀서 아무도 안 따라간다. aside는 경고·팁
+   전용으로 두고, "다른 문서로 가보세요" 안내는 코랄 띠를 두른 이 박스로 통일한다.
+   .md 파일에서도 쓸 수 있도록 컴포넌트가 아니라 순수 HTML + 클래스로 만들었다. */
+
+.doc-link {
+	margin-block: var(--cwc-gap-lg);
+	padding: 1rem 1.25rem;
+	border-radius: var(--cwc-radius-md);
+	border-left: 4px solid var(--sl-color-accent);
+	background: var(--sl-color-accent-low);
+}
+
+.doc-link > * {
+	margin: 0;
+}
+
+.doc-link > * + * {
+	margin-top: 0.4rem;
+}
+
+.doc-link-label {
+	font-size: var(--sl-text-xs);
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	color: var(--sl-color-accent-high);
+}
+
+.doc-link-to {
+	font-weight: 700;
+	font-size: var(--sl-text-base);
+	color: var(--sl-color-white);
+}
+
+.doc-link-desc {
+	font-size: var(--sl-text-sm);
+	color: var(--sl-color-gray-2);
+}
+
+/* ── 문장 안 핵심 구절 강조 ─────────────────────────────────── */
+/* 굵게만으로는 묻히는 자리에 <mark>로 감싼다. 형광펜처럼 글자 아래쪽만 칠해서
+   본문 리듬을 깨지 않는다. 남용하면 강조가 죽으니 한 화면에 하나 정도만 쓴다. */
+
+.sl-markdown-content mark:not(:where(.not-content *)) {
+	background: linear-gradient(transparent 52%, var(--sl-color-accent-low) 52%);
+	color: inherit;
+	font-weight: 700;
+	padding-inline: 0.15em;
+	border-radius: 0.2em;
+}
+
 /* ── 탭 ─────────────────────────────────────────────────────── */
 
 [role='tab'][aria-selected='true'] {
