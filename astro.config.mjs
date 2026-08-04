@@ -37,6 +37,7 @@ export default defineConfig({
 					items: [
 						{ label: '작업 공간 만들기', slug: 'core/00-workspace' },
 						{ label: '도구 6종', slug: 'core/01-tools' },
+						{ label: '개발 용어 6개', slug: 'core/07-dev-words' },
 						{ label: '프롬프트 가이드', slug: 'core/02-prompting' },
 						{ label: 'AI 팀으로 만들기', slug: 'core/05-ai-team' },
 						{ label: '토큰 절약 설정', slug: 'core/03-token-setup' },
@@ -50,7 +51,7 @@ export default defineConfig({
 					// 빠진다. 매주 해당 회차 파일에서 draft: true만 지우면 열린다.
 					items: [{ autogenerate: { directory: 'sessions' } }],
 				},
-				{ label: '변경 기록', link: '/changelog/' },
+				// 변경 기록은 운영용 문서라 사이드바에서 감춤 (/changelog/ 주소로는 열림)
 			],
 		}),
 	],
