@@ -51,7 +51,7 @@ export default defineConfig({
 					// 빠진다. 매주 해당 회차 파일에서 draft: true만 지우면 열린다.
 					items: [{ autogenerate: { directory: 'sessions' } }],
 				},
-				{ label: '변경 기록', link: '/changelog/' },
+				// 변경 기록은 운영용 문서라 사이드바에서 감춤 (/changelog/ 주소로는 열림)
 			],
 		}),
 	],
