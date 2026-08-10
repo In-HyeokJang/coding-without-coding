@@ -23,9 +23,13 @@
 
 ## ▶ 지금 할 것
 
-**V-9 — Vercel "New Project" 버튼 문구 확인 (6회차 전에)**
+**남은 것은 전부 사람이 직접 확인해야 하는 항목입니다.**
 
-그 앞에 진행자가 직접 하실 일: **S6-5(Supabase 깨워두기)** · **S6-6(개봉 경로 리허설)**
+- **S6-5** · 8/11 아침 전에 Supabase 프로젝트 깨워두기
+- **S6-6** · 진행자용 타임캡슐 개봉 경로 리허설
+- **V-11** · 6회차 현장에서 `Add Another` 버튼 문구 눈으로 확인
+- **FIX-3 · FIX-4** · 배포 워크플로 로그에서 Pagefind·404 경고 확인
+- **V-14** · 3열 표 9개 (급하지 않음, 시즌 2 전에)
 
 > `main` 반영은 사용자가 직접 합니다. 아래 "브랜치 규칙" 참고.
 
@@ -86,22 +90,23 @@ main 반영(#12) 후 newbie-sim · doc-guard · fact-check · build-check 를 �
 | 상태 | ID | 뭐가 문제인가 | 근거 |
 |---|---|---|---|
 | ✅ | V-8 | `core/01-tools.mdx` `anon key` → `publishable key (예전 이름 anon)` | doc-guard 통과 |
-| ⬜ | V-9 | Vercel 공식 문서는 이제 "Add New → Project" 가 아니라 **우측 상단 `New Project` 버튼** 하나로 안내한다. 6회차 54행 재확인 필요 | fact-check (vercel.com/docs/git) |
-| ⬜ | V-10 | Claude Code · Codex 설치는 공식 권장이 **네이티브 스크립트**로 바뀌었다(npm 은 Advanced 로 내려감). npm 방식은 Node 22+ 필요. 1회차·도구 문서 | fact-check (code.claude.com/docs/en/setup) |
-| ⬜ | V-11 | 6회차 `Add Another` 버튼 문구는 공식 문서로 확인 못 함. 현장 리허설 때 눈으로 확인 | fact-check |
+| ✅ | V-9 | 6회차 Vercel 진입을 **우측 상단 `New Project`** 로 바꾸고, `Add New` 화면일 수도 있다는 보충을 덧붙였다 | fact-check (vercel.com/docs/git) |
+| ✅ | V-10 | 1회차 Claude Code 설치에 네이티브 스크립트(`irm https://claude.ai/install.ps1 \| iex`) 를 대안으로 추가. npm 이 안 될 때 쓰도록 | fact-check (code.claude.com/docs/en/setup) |
+| ⬜ | V-11 | 6회차 `Add Another` 버튼 문구는 공식 문서로 확인 못 함. **현장에서 눈으로 확인해야 하는 항목** | 진행자 |
 
 ### C · 전반 품질 (시즌 2 전까지)
 
 | 상태 | ID | 뭐가 문제인가 | 근거 |
 |---|---|---|---|
-| ⬜ | V-12 | **ASCII 그림이 3곳에 남아 있다** — `core/00-workspace.md:341` · `core/02-prompting.md:433` · `core/03-token-setup.md:320` 의 "한 장 요약". 규칙상 금지이고 폰에서 깨진다 | doc-guard |
+| ✅ | V-12 | **ASCII 그림 전부 제거.** 처음 지목한 "한 장 요약" 3곳 외에 정렬 코드블록 3곳이 더 있었다 (`03-token-setup` 메시지 수, `02-prompting` 에러 3단계, `00-workspace` VSCode 화면). **전 문서 박스 문자 0건** | build-check 전수 grep |
 | ✅ | V-13 | 1회차 "뚫다" 3곳, `core/03-token-setup.md`·`core/05-ai-team.md` 정리. **전 문서 금지어 0건** 확인 | doc-guard 전수 grep |
-| ⬜ | V-14 | 3열 이상 표가 `core/` 전반에 퍼져 있다 (01·00·03·02·04·05·07, session-2). 규칙은 2열 기본 | doc-guard |
-| ⬜ | V-15 | CLAUDE.md 템플릿이 세 곳에 중복인데 **내용이 서로 다르다.** `session-3` 판에만 "한 번에 파일 하나씩", `## 데이터 구조` 가 빠져 있다 | doc-guard |
-| ⬜ | V-16 | `session-2`·`session-5` 가 "4단계" 라고 예고하는데 실제 하위 절은 각각 6개·5개 | doc-guard |
-| ⬜ | V-17 | 2회차에서 스크린샷을 찍어 AI에게 주라고 하는데, **찍는 법과 넣는 법이 없다** | newbie-sim |
-| ⬜ | V-18 | 6회차는 명시된 시간이 50분뿐. 나머지 70분(배포 대기·에러·폰 접속·개봉)이 비어 있어 진행자가 감을 잡기 어렵다 | newbie-sim |
-| ⬜ | V-19 | 3회차 "오늘의 규칙 3개 — 지난주와 같아요" 인데 실제로 겹치는 건 1개뿐 | newbie-sim |
+| 🔶 | V-14 | 3열 이상 표 — `02-prompting` 의 "좋은/나쁜 프롬프트" 표를 목록으로 바꿨다. **9개가 남아 있다** (00 ·01 ·03 ×2 ·04 ×2 ·05 ·07 ·session-2). 칸 안 문장이 짧아 당장 깨지진 않아 남겨둔다 | build-check 전수 집계 |
+| ✅ | V-15 | `session-3` CLAUDE.md 템플릿에 "한 번에 파일 하나씩", "여러 개를 시키면 되물어라", `## 데이터 구조` 추가. 세 판 문구 일치 | doc-guard 통과 |
+| ✅ | V-16 | 2회차 "4단계" → "5단계" (마지막 · 목록 확정 → 5단계). 5회차는 "4단계 + 마지막" 이라 다른 회차와 같은 형식, 그대로 둠 | doc-guard 통과 |
+| ✅ | V-17 | 2회차에 화면 사진 찍는 법 (`윈도우 키 + Shift + S` → 드래그 → `Ctrl+V`) + 사진 없이도 된다는 안내 | doc-guard 통과 |
+| ✅ | V-18 | 6회차 3·4·5단계와 타임캡슐 개봉에 시간 표기 (10/25/10/20분). **합계 115분** | build-check 계산 |
+| ✅ | V-19 | 3회차 "지난주와 같아요" → "첫 번째는 지난주 그대로, 두 개가 오늘 새로" | doc-guard 통과 |
+| ✅ | V-21 | 재검수에서 발견 · `session-2` 에 `core/00-workspace.md` 의 VSCode 화면 설명이 통째로 중복돼 있었다. 바로 위에 doc-link 가 있는데도. 한 문장으로 줄임 | doc-guard |
 
 ### 통과한 것
 
