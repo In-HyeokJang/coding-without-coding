@@ -261,6 +261,9 @@ const { mode = 'seal', supabaseUrl = '', supabaseAnonKey = '' } = Astro.props;
 					const password = (box.querySelector('#open-password') as HTMLInputElement).value.trim();
 
 					let foundData: any = null;
+					// 서버 쪽 문제인지, 정말 이름·암호가 안 맞는 것인지 구분하기 위한 기록.
+					// 이게 남아 있으면 "암호가 틀렸다" 고 말하면 안 된다.
+					let serverError: string | null = null;
 
 					// Supabase에서 먼저 검색
 					if (envUrl && envKey) {
@@ -279,10 +282,17 @@ const { mode = 'seal', supabaseUrl = '', supabaseAnonKey = '' } = Astro.props;
 								if (rows && rows.length > 0) {
 									foundData = rows[0];
 								}
+							} else {
+								serverError = `서버 응답 ${res.status}`;
+								console.warn('Supabase 조회 실패:', res.status, await res.text().catch(() => ''));
 							}
 						} catch (err) {
-							console.warn('Supabase 조회 실패, 로컬 저장소를 조회합니다.');
+							serverError = '서버에 연결하지 못했습니다';
+							console.warn('Supabase 조회 실패, 로컬 저장소를 조회합니다.', err);
 						}
+					} else {
+						serverError = '보관함 주소가 설정되지 않았습니다';
+						console.warn('Supabase 환경변수가 없습니다.');
 					}
 
 					// Supabase에서 못 찾았을 경우 LocalStorage 조회 fallback
@@ -305,6 +315,13 @@ const { mode = 'seal', supabaseUrl = '', supabaseAnonKey = '' } = Astro.props;
 							});
 						}
 						resultDiv?.classList.remove('hidden');
+					} else if (serverError) {
+						// 조회 자체가 안 된 것이다. 참가자 잘못이 아니므로 그렇게 말하지 않는다.
+						alert(
+							`⚠️ 지금 보관함을 열어보지 못했어요 (${serverError}).\n\n` +
+								'이름이나 암호 문제가 아닙니다. 잠시 뒤 다시 눌러보시고,\n' +
+								'그래도 안 되면 진행자(타스)에게 말씀해주세요. 같이 열어드릴게요.'
+						);
 					} else {
 						alert('❌ 이름 또는 4자리 암호가 일치하지 않습니다. 다시 확인해주세요!');
 					}
