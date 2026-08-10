@@ -75,7 +75,8 @@
 
 | 상태 | ID | 할 일 | 검증 |
 |---|---|---|---|
-| ⬜ | FIX-1 | `TimeCapsule.astro` 39·45행 라벨의 "6주" → "3주". 이번 시즌 봉인은 끝나 급하지 않지만 시즌 2 전에 | build-check |
+| ✅ | FIX-1 | `TimeCapsule.astro` 의 "6주" → "3주" **9곳**. 처음 지목한 2곳 외에 개봉 폼 제목·완주 축하 문구까지 남아 있었다 (6회차 당일 참가자가 보는 화면) | build-check 최종 확인 통과 (인코딩·로직·렌더링) |
+| ⬜ | FIX-5 | `README.md:10` 의 "6주 동안" → "3주". `site-notes.md:213` 도 (내부 노트라 우선순위 낮음) | build-check |
 | ⬜ | FIX-2 | changelog 에 이번 작업 기록 추가 | doc-guard |
 | ⬜ | FIX-3 | 로컬 `npm run build` 가 Pagefind 설치 실패로 크래시한다 (`platform windows-x64 is not yet a supported architecture`, exit 127). 정적 페이지 생성까지는 정상. CI(ubuntu)에서는 재현되지 않는 것으로 보이나 실제 Actions 로그로 확인 필요 | 배포 워크플로 로그 |
 | ⬜ | FIX-4 | 빌드 로그의 `/404.html Entry docs → 404 was not found` 경고 원인 확인 | build-check |
