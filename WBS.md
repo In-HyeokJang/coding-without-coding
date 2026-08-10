@@ -23,7 +23,7 @@
 
 ## ▶ 지금 할 것
 
-**SCHED-1 — 6회차 `openDate` 를 `2026-08-11` 로 (5·6회차 동시 공개)**
+**S6-1 — 6회차 Vercel Import 흐름 재확인 (가장 위험한 항목)**
 
 ---
 
@@ -43,9 +43,9 @@
 
 | 상태 | ID | 할 일 | 검증 |
 |---|---|---|---|
-| ⬜ | SCHED-1 | 6회차 `openDate` 를 `2026-08-11` 로 변경 (5회차와 같은 날 공개) | build-check |
-| ⬜ | SCHED-2 | 자동 공개 워크플로가 **같은 날 2개를 한 번에** 여는지 로직 확인 | build-check |
-| ⬜ | SCHED-3 | `dev` → `main` 반영 (main에 옛 날짜가 남으면 안 열린다) | 양쪽 frontmatter 일치 |
+| ✅ | SCHED-1 | 6회차 `openDate` 를 `2026-08-11` 로 변경 (5회차와 같은 날 공개) | build-check 통과 |
+| ✅ | SCHED-2 | 자동 공개 워크플로가 **같은 날 2개를 한 번에** 여는지 로직 확인 | build-check 통과 — 루프·글로브·정규식·날짜비교·sed 를 로컬에서 재현 확인 |
+| ⏸️ | SCHED-3 | `dev` → `main` 반영 + push (main에 옛 날짜가 남으면 안 열린다). **오늘 문서 작업을 다 끝내고 마지막에 한 번에.** 내일 아침 9시 전까지가 마감 | 양쪽 frontmatter 일치 |
 
 ---
 
@@ -75,6 +75,8 @@
 |---|---|---|---|
 | ⬜ | FIX-1 | `TimeCapsule.astro` 39·45행 라벨의 "6주" → "3주". 이번 시즌 봉인은 끝나 급하지 않지만 시즌 2 전에 | build-check |
 | ⬜ | FIX-2 | changelog 에 이번 작업 기록 추가 | doc-guard |
+| ⬜ | FIX-3 | 로컬 `npm run build` 가 Pagefind 설치 실패로 크래시한다 (`platform windows-x64 is not yet a supported architecture`, exit 127). 정적 페이지 생성까지는 정상. CI(ubuntu)에서는 재현되지 않는 것으로 보이나 실제 Actions 로그로 확인 필요 | 배포 워크플로 로그 |
+| ⬜ | FIX-4 | 빌드 로그의 `/404.html Entry docs → 404 was not found` 경고 원인 확인 | build-check |
 
 ---
 
@@ -87,6 +89,8 @@
 | 2026-08-10 | AUTO-2 | `/cwc-next` 스킬 — 진행·검증 회의·체크·커밋 절차 | 인프라 커밋 |
 | 2026-08-10 | AUTO-3 | Stop 훅 `wbs-check.ps1` — 진행중 항목 감지 exit 2, 루프 방지 확인 | 인프라 커밋 |
 | 2026-08-10 | AUTO-4 | 3회 실패 시 넘어가기 규칙 (스킬 4절 + 막힌 기록 표) | 인프라 커밋 |
+| 2026-08-10 | SCHED-1 | 6회차 openDate 2026-08-12 → 2026-08-11 | 일정 커밋 |
+| 2026-08-10 | SCHED-2 | 자동 공개 워크플로 로직 검증 (같은 날 2건 동시 해제 확인) | 일정 커밋 |
 
 ---
 
