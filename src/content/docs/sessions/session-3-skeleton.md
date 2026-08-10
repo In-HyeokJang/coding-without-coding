@@ -458,7 +458,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 좀 밋밋하죠. 흰 배경에 검은 글씨뿐이에요. 맞습니다, 오늘은 여기까지가 목표예요.
 
-각자 진도가 다르니 먼저 되신 분은 먼저 3단계로 가셔도 좋아요. 기다리지 않으셔도 됩니다.
+여기까지 되셨으면 3단계로 넘어가셔도 좋아요. 기다리지 않으셔도 됩니다.
 
 :::tip[다 만든 뒤에 이거 한 번만]
 ```

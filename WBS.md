@@ -23,7 +23,9 @@
 
 ## ▶ 지금 할 것
 
-**S6-5 — Supabase 프로젝트 깨워두기 (진행자가 직접, 8/11 아침 전)**
+**V-9 — Vercel "New Project" 버튼 문구 확인 (6회차 전에)**
+
+그 앞에 진행자가 직접 하실 일: **S6-5(Supabase 깨워두기)** · **S6-6(개봉 경로 리허설)**
 
 > `main` 반영은 사용자가 직접 합니다. 아래 "브랜치 규칙" 참고.
 
@@ -60,6 +62,56 @@
 | ✅ | SCHED-3 | `dev` → `main` 병합·push 완료 (`7e6182d`). 양쪽 5·6회차 `openDate` 모두 2026-08-11 | 병합 후 frontmatter 확인 |
 
 ---
+
+## V · 전체 검증 결과 (2026-08-10 · 팀 4명 전수 조사)
+
+main 반영(#12) 후 newbie-sim · doc-guard · fact-check · build-check 를 전 문서에 돌린 결과.
+**빌드·링크·자동공개 워크플로·타임캡슐은 전부 통과.** 아래는 내용 쪽에서 나온 것.
+
+### A · 내일(8/11) 5회차에 바로 영향
+
+| 상태 | ID | 뭐가 문제인가 | 근거 |
+|---|---|---|---|
+| ✅ | V-1 | **Supabase 가 2026-05-30 부터 새 테이블을 Data API 에 자동 노출하지 않게 바뀌었다.** RLS 를 열어도 `anon` 롤에 GRANT 가 없으면 저장이 안 된다 → 4회차 SQL 프롬프트·에러표·tip, 5회차 1단계 tip, 프롬프트 가이드까지 반영 | fact-check (supabase.com/changelog/45329) → doc-guard 재확인 |
+| ✅ | V-2 | `core/05-ai-team.md` 회차표를 2열로 바꾸고 5회차를 "DESIGN.md 방식, 팀 안 불러도 됨" 으로. 3명 프롬프트는 시즌 이후용으로 재배치 | doc-guard 통과 |
+| ✅ | V-3 | `core/02-prompting.md` "배포 예행연습" → "한 번 점검하고 GitHub에 올리기" | doc-guard 통과 |
+| ✅ | V-4 | `core/01-tools.mdx` "6회차의 진짜 벽" → "6회차에 자주 막히는 곳" | doc-guard 통과 |
+| ✅ | V-5 | 진도가 드러나는 표현 정리 (`session-3`·`session-5`·`session-4` 규칙) | doc-guard 통과 |
+| ✅ | V-6 | `session-6` 맺음말에서 뒤처짐을 확인시키는 문장 삭제 | doc-guard 통과 |
+| ✅ | V-7 | `session-5` "이 30분" → "이 시간" (헤더 25분과 불일치 해소) | doc-guard 통과 |
+| ✅ | V-20 | 재검증에서 발견 · `core/02-prompting.md` 4회차 SQL 프롬프트에도 GRANT 반영 (상시 참조 문서라 여기서 복붙하면 같은 버그를 다시 만난다) | doc-guard |
+
+### B · 사실 정정 (급하지 않지만 확실히)
+
+| 상태 | ID | 뭐가 문제인가 | 근거 |
+|---|---|---|---|
+| ✅ | V-8 | `core/01-tools.mdx` `anon key` → `publishable key (예전 이름 anon)` | doc-guard 통과 |
+| ⬜ | V-9 | Vercel 공식 문서는 이제 "Add New → Project" 가 아니라 **우측 상단 `New Project` 버튼** 하나로 안내한다. 6회차 54행 재확인 필요 | fact-check (vercel.com/docs/git) |
+| ⬜ | V-10 | Claude Code · Codex 설치는 공식 권장이 **네이티브 스크립트**로 바뀌었다(npm 은 Advanced 로 내려감). npm 방식은 Node 22+ 필요. 1회차·도구 문서 | fact-check (code.claude.com/docs/en/setup) |
+| ⬜ | V-11 | 6회차 `Add Another` 버튼 문구는 공식 문서로 확인 못 함. 현장 리허설 때 눈으로 확인 | fact-check |
+
+### C · 전반 품질 (시즌 2 전까지)
+
+| 상태 | ID | 뭐가 문제인가 | 근거 |
+|---|---|---|---|
+| ⬜ | V-12 | **ASCII 그림이 3곳에 남아 있다** — `core/00-workspace.md:341` · `core/02-prompting.md:433` · `core/03-token-setup.md:320` 의 "한 장 요약". 규칙상 금지이고 폰에서 깨진다 | doc-guard |
+| ✅ | V-13 | 1회차 "뚫다" 3곳, `core/03-token-setup.md`·`core/05-ai-team.md` 정리. **전 문서 금지어 0건** 확인 | doc-guard 전수 grep |
+| ⬜ | V-14 | 3열 이상 표가 `core/` 전반에 퍼져 있다 (01·00·03·02·04·05·07, session-2). 규칙은 2열 기본 | doc-guard |
+| ⬜ | V-15 | CLAUDE.md 템플릿이 세 곳에 중복인데 **내용이 서로 다르다.** `session-3` 판에만 "한 번에 파일 하나씩", `## 데이터 구조` 가 빠져 있다 | doc-guard |
+| ⬜ | V-16 | `session-2`·`session-5` 가 "4단계" 라고 예고하는데 실제 하위 절은 각각 6개·5개 | doc-guard |
+| ⬜ | V-17 | 2회차에서 스크린샷을 찍어 AI에게 주라고 하는데, **찍는 법과 넣는 법이 없다** | newbie-sim |
+| ⬜ | V-18 | 6회차는 명시된 시간이 50분뿐. 나머지 70분(배포 대기·에러·폰 접속·개봉)이 비어 있어 진행자가 감을 잡기 어렵다 | newbie-sim |
+| ⬜ | V-19 | 3회차 "오늘의 규칙 3개 — 지난주와 같아요" 인데 실제로 겹치는 건 1개뿐 | newbie-sim |
+
+### 통과한 것
+
+- **빌드** — 정적 페이지 생성·번들링 정상, 링크 깨짐 경고 0건 (Pagefind 크래시는 Windows 전용 기존 문제)
+- **자동 공개** — 8/11 아침에 5·6회차 두 개가 함께 열리는 것을 로컬 재현으로 확인
+- **배포 노출** — `.claude/`, `WBS.md`, `site-notes.md` 는 `dist/` 에 안 들어감
+- **타임캡슐** — seal/open 두 경로 정상, "6주" 잔재 0건
+- **전체 이야기** — 1회차 봉인 → 6회차 개봉, 2회차 목록 → 3회차 화면, 4회차 기능 → 5회차 다듬기 → 6회차 배포가 끊기지 않고 이어짐
+- **회차 간격** — 6일/하루 표기가 실제 일정과 전부 일치
+- **다이어그램 4개** 규칙 준수, 사이드바 링크 정상
 
 ## PRE · "오기 전에" 걷어내기 (2026-08-10 추가)
 
