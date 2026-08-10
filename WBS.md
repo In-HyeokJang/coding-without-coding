@@ -53,10 +53,12 @@
 
 | 상태 | ID | 할 일 | 검증 |
 |---|---|---|---|
-| ⬜ | S6-1 | Vercel Import 흐름 재확인 — 문서는 `Import → Settings → 환경변수 → Deploy` 인데 실제는 Import 직후 Configure 화면에서 환경변수까지 넣고 바로 Deploy가 눌린다. 순서 다시 쓰기 | fact-check → newbie-sim |
-| ⬜ | S6-2 | 배포 후 환경변수를 넣으면 **재배포(Redeploy)** 가 필요하다는 안내 추가 | fact-check |
-| ⬜ | S6-3 | 타임캡슐 개봉(`mode="open"`) 실동작 확인 — 1회차 봉인 데이터로 열리는지. 당일 안 열리면 대안이 없다 | build-check |
+| ✅ | S6-1 | Vercel Import 흐름 재확인 → 4단계에서 5단계로 재구성. Import 직후 화면에서 환경변수까지 넣고 Deploy 앞에서 멈추는 흐름으로 | fact-check(공식문서 확인) → newbie-sim → doc-guard → 재확인 통과 |
+| ✅ | S6-2 | 배포 후 환경변수를 고치면 **Redeploy** 가 필요하다는 안내를 새 4단계에 추가 | fact-check 출처 확인 |
+| 🔄 | S6-3 | 타임캡슐 개봉(`mode="open"`) 검증 → **버그 발견**: Supabase 조회가 실패해도(`res.ok=false`) 조용히 넘어가 "이름 또는 암호가 일치하지 않습니다" 로 표시된다. 서버 오류를 참가자 오타로 오인시킨다 | build-check |
 | ⬜ | S6-4 | 6회차 전체 따라가기 점검 | newbie-sim → doc-guard |
+| ⬜ | S6-5 | 6회차 전에 Supabase 프로젝트 한 번 깨워두기 (무료 플랜 휴면 → 첫 조회 실패 가능) | 진행자 체크리스트 |
+| ⬜ | S6-6 | 진행자용 개봉 경로 확보 — 문서는 "기억 안 나면 진행자에게" 라고 약속하는데 코드에 수단이 없다. Supabase 대시보드로 여는 절차를 미리 확인해둘 것 | 리허설 |
 
 ---
 
