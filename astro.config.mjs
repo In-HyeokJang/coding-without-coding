@@ -47,8 +47,9 @@ export default defineConfig({
 				},
 				{
 					label: '회차',
-					// 파일 목록 대신 자동 생성 — draft: true인 회차는 자동으로 사이드바에서
-					// 빠진다. 매주 해당 회차 파일에서 draft: true만 지우면 열린다.
+					// 파일 목록 대신 자동 생성 — sessions/ 안의 파일이 파일명 순서대로
+					// 사이드바에 올라간다. 회차는 전부 열어두므로 따로 여닫지 않는다.
+					// 새 회차는 파일만 추가하면 여기 손대지 않아도 된다.
 					items: [{ autogenerate: { directory: 'sessions' } }],
 				},
 				// 변경 기록은 운영용 문서라 사이드바에서 감춤 (/changelog/ 주소로는 열림)
